@@ -19,38 +19,47 @@
 // 
 //////////////////////////////////////////////////////////////////////////////////
 
-
-module top(
-    input [3:0] data,
-    input select,
-    input reset,
+module top (
     input clk,
+    input submit,
+    input nextLevel,
+    input [3:0] data,
     output reg[2:0] out
-    );
-    parameter val1 = 4'b0101;
-    parameter val2 = 4'b1011;
-    parameter val3 = 4'b0001;
-    parameter val4 = 4'b1000;
+);
+    reg [3:0] bram [0:9];
+    reg [3:0] addr;
+    integer i;
     
-    reg select_ff1, select_ff2;
-    wire select_negedge;
-
-    always @(posedge clk) begin
-        select_ff1 <= select;      // Synchronize button press
-        select_ff2 <= select_ff1;  // Second-stage flip-flop
+    wire nextLevelNew;
+    button_debouncer bd1 (.clk(clk), .reset(), .button_in(nextLevel), .button_out(nextLevelNew));
+    
+//    initial begin
+//        for (i = 0; i < 10; i = i + 1) begin
+//            bram[i] <= $urandom_range(15,0);
+//        end
+//        out <= 3'b000;
+//        addr <= 0;
+//    end
+    initial begin
+        for (i = 0; i < 10; i = i + 1) begin
+            bram[i] = i; // Assigns sequential values (0000 to 1001)
+        end
+        out <= 3'b000;
+        addr <= 0;
     end
-
-    assign select_negedge = select_ff2 & ~select_ff1; // Detect falling edge
-
-    always @(posedge clk or posedge reset) begin
-        if (reset)
+    always @(posedge clk) begin
+        if (submit) begin
+            if (data == bram[addr])
+                out <= 3'b010;
+            else
+                out <= 3'b001;
+        end
+        else if (nextLevelNew) begin
+            if (addr < 9)
+                addr <= addr + 1;
+            else
+                addr <= 0;
             out <= 3'b000;
-        else if (select_negedge) begin
-            out <= 3'b000;
-            case (data)
-                4'b0101, 4'b1011, 4'b0001, 4'b1000: out <= 3'b010;
-                default: out <= 3'b100;
-            endcase
         end
     end
 endmodule
