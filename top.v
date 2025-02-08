@@ -23,6 +23,7 @@ module top (
     input clk,
     input submit,
     input nextLevel,
+    input reset,
     input [3:0] data,
     output reg[2:0] out
 );
@@ -31,7 +32,9 @@ module top (
     integer i;
     
     wire nextLevelNew;
-    button_debouncer bd1 (.clk(clk), .reset(), .button_in(nextLevel), .button_out(nextLevelNew));
+    wire submitNew;
+    button_debouncer bd1 (.clk(clk), .reset(reset), .button_in(submit), .button_out(submitNew));
+    button_debouncer bd2 (.clk(clk), .reset(reset), .button_in(nextLevel), .button_out(nextLevelNew));
     
     initial begin
         for (i = 0; i < 10; i = i + 1) begin
@@ -40,8 +43,12 @@ module top (
         out <= 3'b000;
         addr <= 0;
     end
-    always @(posedge clk) begin
-        if (submit) begin
+    always @(posedge clk or posedge reset) begin
+        if (reset) begin
+            out <= 3'b000;
+            addr <= 0;
+        end
+        else if (submitNew) begin
             if (data == bram[addr])
                 out <= 3'b010;
             else
