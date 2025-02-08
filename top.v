@@ -33,16 +33,9 @@ module top (
     wire nextLevelNew;
     button_debouncer bd1 (.clk(clk), .reset(), .button_in(nextLevel), .button_out(nextLevelNew));
     
-//    initial begin
-//        for (i = 0; i < 10; i = i + 1) begin
-//            bram[i] <= $urandom_range(15,0);
-//        end
-//        out <= 3'b000;
-//        addr <= 0;
-//    end
     initial begin
         for (i = 0; i < 10; i = i + 1) begin
-            bram[i] = i; // Assigns sequential values (0000 to 1001)
+            bram[i] = (13 * i + 46) % 16; // Assigns sequential values (0000 to 1001)
         end
         out <= 3'b000;
         addr <= 0;
