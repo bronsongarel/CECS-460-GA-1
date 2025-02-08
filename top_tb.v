@@ -23,13 +23,13 @@
 module top_tb(
     );
     reg[3:0] data_tb;
-    reg submit_tb, nextLevel_tb, clk_tb;
+    reg submit_tb, nextLevel_tb, clk_tb, reset_tb;
     wire[2:0] out_tb;
     integer i;
     
-    localparam period = 15;
+    localparam period = 10;
     
-    top uut(.clk(clk_tb), .submit(submit_tb),.nextLevel(nextLevel_tb), .data(data_tb), .out(out_tb));
+    top uut(.clk(clk_tb), .submit(submit_tb), .nextLevel(nextLevel_tb), .data(data_tb), .reset(reset_tb), .out(out_tb));
     
     initial begin
         clk_tb = 0;
@@ -39,8 +39,8 @@ module top_tb(
         end
     end
     initial begin
-        for(i = 0; i < 64; i = i + 1) begin
-            {data_tb, submit_tb, nextLevel_tb} = i;
+        for(i = 0; i < 128; i = i + 1) begin
+            {data_tb, submit_tb, nextLevel_tb, reset_tb} = i;
             #period;
         end
     end
