@@ -11,4 +11,5 @@ This project uses Vivado 2020.2 (but also works for any version of vivado) and i
 The SOC used was the Zybo-Z7 SOC.
 
 Below is an image of our simulation screenshot we created.  The bottom variable shows our BRAM, while the inputs change to iterate through every possible guess to compare with the given BRAM index.
-![image](https://github.com/user-attachments/assets/8eecd27b-02c3-4781-a1a7-a6d1330b7865)
+![image](https://github.com/user-attachments/assets/958834f0-2e10-45ab-9c0b-26fdf7d2801b)
+
